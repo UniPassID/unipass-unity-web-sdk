@@ -17,7 +17,6 @@ using TMPro;
 
 public class unipass_demo : MonoBehaviour
 {
-
     public Wallet wallet;
 
     [SerializeField]
@@ -121,7 +120,7 @@ public class unipass_demo : MonoBehaviour
         var tx = new TransactionMessage(from: wallet.getAddress(), to: native_to, value: Web3.Convert.ToWei(BigDecimal.Parse(native_value), 18).ToString(), data: "0x");
         var hash = await wallet.SendTransaction(tx);
         Debug.Log(hash);
-        native_hash.text = "hash: " + native_hash;
+        native_hash.text = "hash: " + hash;
     }
 
     // send erc20 token
