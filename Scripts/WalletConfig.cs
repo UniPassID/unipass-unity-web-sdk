@@ -19,6 +19,11 @@ namespace UnipassWallet
             dark, light,
         }
 
+        public enum ConnectType
+        {
+            google, email, both
+        }
+
         public string nodeRPC = "https://node.wallet.unipass.id/polygon-mumbai";
 
         public string appIcon = "";
@@ -34,5 +39,7 @@ namespace UnipassWallet
         public string appName = "";
 
         public Theme theme = Theme.dark;
+
+        public bool returnEmail = false;
     }
 }

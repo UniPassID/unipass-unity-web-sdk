@@ -49,6 +49,14 @@ public class unipass_demo : MonoBehaviour
         }
     }
 
+    public int dropDownConnectValue
+    {
+        set
+        {
+            Connect(value);
+        }
+    }
+
     public string message { get; set; }
 
     // native token inputs
@@ -65,10 +73,24 @@ public class unipass_demo : MonoBehaviour
     }
 
     // connect first 
-    public async void Connect()
+    public async void Connect(int connectNum)
     {
         Debug.Log("connect clicked");
-        var account = await wallet.Connect();
+        WalletConfig.ConnectType connectType;
+        if (connectNum == 1)
+        {
+            connectType = WalletConfig.ConnectType.google;
+        }
+        else if (connectNum == 2)
+        {
+            connectType = WalletConfig.ConnectType.email;
+        }
+        else if (connectNum == 3)
+        {
+            connectType = WalletConfig.ConnectType.both;
+        }
+        else return;
+        var account = await wallet.Connect(connectType);
         Debug.Log(account.address);
         Debug.Log(account.email);
         Debug.Log(account.newborn);

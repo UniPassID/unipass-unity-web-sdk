@@ -47,6 +47,7 @@ namespace UnipassWallet
             {
                 Web.EnableRemoteDebugging();
             }
+            Web.SetUserAgent(false);
             _UnipassDebugLog("Awake");
 
             //onWalletOpened.AddListener(() =>
@@ -75,10 +76,10 @@ namespace UnipassWallet
             };
         }
 
-        public async Task<Account> Connect()
+        public async Task<Account> Connect(WalletConfig.ConnectType connectType)
         {
-            _UnipassDebugLog("connect url: " + formatUnipassUrl("connect"));
-            _mainWebViewPrefab.WebView.LoadUrl(formatUnipassUrl("connect"));
+            _UnipassDebugLog("connect url: " + formatUnipassUrl("connect", connectType));
+            _mainWebViewPrefab.WebView.LoadUrl(formatUnipassUrl("connect", connectType));
             _ShowWallet();
             var value = await ExecuteUnipassJS("connect");
             var _account = JsonConvert.DeserializeObject<UnipassResponse<Account>>(value).data;
@@ -228,6 +229,9 @@ namespace UnipassWallet
                         chain: '" + walletConfig.chainType.ToString() + @"',
                         theme: '" + walletConfig.theme.ToString() + @"',
                     },
+                      payload: {
+                        returnEmail: '" + walletConfig.returnEmail + @"',
+                      }
                 });
             ";
             _UnipassDebugLog(js);
@@ -351,10 +355,19 @@ namespace UnipassWallet
             };
         }
 
-        private string formatUnipassUrl(string type)
+        private string formatUnipassUrl(string type, WalletConfig.ConnectType connectType = WalletConfig.ConnectType.both)
         {
             string _domain = walletConfig.domain.EndsWith('/') ? walletConfig.domain : walletConfig.domain + "/";
-            return walletConfig.protocol + "://" + _domain + type;
+            string to = "";
+            if (connectType == WalletConfig.ConnectType.google)
+            {
+                to = "?google";
+            }
+            if (connectType == WalletConfig.ConnectType.email)
+            {
+                to = "?email";
+            }
+            return walletConfig.protocol + "://" + _domain + type + to;
         }
 
         private void _checkInitialized()
