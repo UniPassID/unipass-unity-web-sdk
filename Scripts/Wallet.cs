@@ -10,12 +10,15 @@ using Nethereum.Web3;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
-using Vuplex.WebView.Demos;
+using System;
+using System.Text;
 
 namespace UnipassWallet
 {
     public class Wallet : MonoBehaviour
     {
+
+        private string UNIPASS_MESSSAGE_PREFIX = "\x18UniPass Signed Message:\n";
 
         public UnityEvent onReatyToConnect;
 
@@ -110,16 +113,30 @@ namespace UnipassWallet
             return hash;
         }
 
+        public static byte[] Combine(byte[] first, byte[] second, byte[] third)
+        {
+            byte[] ret = new byte[first.Length + second.Length + third.Length];
+            Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+            Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+            Buffer.BlockCopy(third, 0, ret, first.Length + second.Length,
+                             third.Length);
+            return ret;
+        }
+
         public async Task<bool> isValidSignature(string message, string sig)
         {
             _checkInitialized();
             string[] hexArray = new string[] { sig };
-            byte[] hashOutput = Sha3Keccack.Current.CalculateHash(message).HexToByteArray();
+
+            byte[] bytes = Encoding.ASCII.GetBytes(message);
+
+            byte[] messageBytes = Sha3Keccack.Current.CalculateHash(UNIPASS_MESSSAGE_PREFIX + bytes.Length.ToString() + message).HexToByteArray();
+
             byte[] sigOutput = string.Join("", hexArray.Select(x => x.RemoveHexPrefix()).ToArray()).HexToByteArray();
             var web3 = new Web3(walletConfig.nodeRPC);
             var isValidSignatureFunctionMessage = new IsValidSignatureFunction()
             {
-                Hash = hashOutput,
+                Hash = messageBytes,
                 Signature = sigOutput,
             };
             var sigHandler = web3.Eth.GetContractQueryHandler<IsValidSignatureFunction>();
