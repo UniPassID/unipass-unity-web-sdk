@@ -79,9 +79,11 @@ namespace UnipassWallet
             };
         }
 
-        public async Task<Account> Connect(WalletConfig.ConnectType connectType)
+        public async Task<Account> Connect(WalletConfig.ConnectType connectType, bool authorize)
         {
             _UnipassDebugLog("connect url: " + formatUnipassUrl("connect", connectType));
+            _UnipassDebugLog("authorizel: " + authorize);
+            walletConfig.authorize = authorize;
             _mainWebViewPrefab.WebView.LoadUrl(formatUnipassUrl("connect", connectType));
             _ShowWallet();
             var value = await ExecuteUnipassJS("connect");
@@ -248,6 +250,7 @@ namespace UnipassWallet
                     },
                       payload: {
                         returnEmail: '" + walletConfig.returnEmail + @"',
+                        authorize: '" + walletConfig.authorize + @"',
                       }
                 });
             ";
@@ -378,11 +381,11 @@ namespace UnipassWallet
             string to = "";
             if (connectType == WalletConfig.ConnectType.google)
             {
-                to = "?google";
+                to = "?connectType=google";
             }
             if (connectType == WalletConfig.ConnectType.email)
             {
-                to = "?email";
+                to = "?connectType=email";
             }
             return walletConfig.protocol + "://" + _domain + type + to;
         }

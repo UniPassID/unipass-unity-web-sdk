@@ -41,5 +41,7 @@ namespace UnipassWallet
         public Theme theme = Theme.dark;
 
         public bool returnEmail = false;
+
+        public bool authorize = false;
     }
 }

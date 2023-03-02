@@ -90,10 +90,12 @@ public class unipass_demo : MonoBehaviour
             connectType = WalletConfig.ConnectType.both;
         }
         else return;
-        var account = await wallet.Connect(connectType);
+        var account = await wallet.Connect(connectType, true);
         Debug.Log(account.address);
         Debug.Log(account.email);
         Debug.Log(account.newborn);
+        Debug.Log(account.message);
+        Debug.Log(account.signature);
         account_text.text = "address: " + account.address + "email: " + account.email + "newborn: " + account.newborn;
         var config = wallet.GetWalletConfig();
         if (config.chainType == WalletConfig.ChainType.polygon)
