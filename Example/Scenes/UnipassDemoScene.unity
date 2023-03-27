@@ -785,7 +785,7 @@ MonoBehaviour:
     nodeRPC: https://node.wallet.unipass.id/polygon-mumbai
     appIcon: 
     chainType: 0
-    domain: a71c-172-93-32-147.ngrok.io
+    domain: testnet.wallet.unipass.id
     protocol: https
     env: 0
     appName: test1233
