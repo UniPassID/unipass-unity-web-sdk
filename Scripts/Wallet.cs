@@ -180,7 +180,15 @@ namespace UnipassWallet
             if (_messageListend) return;
             _mainWebViewPrefab.WebView.MessageEmitted += (sender, eventArgs) =>
             {
-                if (eventArgs.Value.Contains("DECLINE"))
+                if (eventArgs.Value.Contains("invalid login"))
+                {
+                    _UnipassDebugLog("invalid login");
+                    _HideWallet();
+                    account = null;
+                    signMessage = "";
+                    _callbackDict.Clear();
+                }
+                else if (eventArgs.Value.Contains("DECLINE"))
                 {
                     _HideWallet();
                     signMessage = "";
